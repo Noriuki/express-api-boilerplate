@@ -1,7 +1,6 @@
 module.exports = {
     app: {
-        app_url: process.env.API_URL,
-        app_port: process.env.PORT,
+        app_port: process.env.PORT
     },
     db: {
         connection_String: process.env.CONNECTION_STRING
