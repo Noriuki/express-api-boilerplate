@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const bcrypt = require('bcryptjs');
+const { encryptPassword } = require("../services/bcrypt.service");
 
 const UserSchema = mongoose.Schema({
         username: {
@@ -29,22 +29,8 @@ const UserSchema = mongoose.Schema({
 UserSchema.pre('save', function (next) {
     if(!this.isModified('password'))
         return next();
-
-    bcrypt.hash(this.password, 10, (err, passwordHash) => {
-        if(err)
-            return next(err);
-        this.password = passwordHash;
-        next();
-    });
+    this.password = encryptPassword(this);
+    next();
 });
-
-UserSchema.methods.comparePassword = function (password, callback) {
-    bcrypt.compare(password, this.password, (err, isMatch) => {
-        if (err){
-            return callback(err);
-        }
-        return callback(null, isMatch);
-    });
-};
 
 module.exports = mongoose.model("user", UserSchema);
